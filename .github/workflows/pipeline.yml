@@ -12,21 +12,18 @@ jobs:
     runs-on: ubuntu-latest # เป้นการยืมคอมพิวเตอร์จำลองของ GitHub
 
     steps:
-      # 1. โหลดไฟล์โค้ดทั้งหมดของเรามาไว้ในคอมจำลอง
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      # 2. install Python
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      # 3. install (Pandas, Boto3, ฯลฯ)
-      - name: Install Dependencies
-        run: pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          pip install pandas boto3 requests fsspec s3fs pyarrow
 
-      # 4. สั่งรันโค้ด Python 
       - name: Run Pipeline Scripts
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
