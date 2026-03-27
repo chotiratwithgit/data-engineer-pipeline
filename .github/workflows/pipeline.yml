@@ -14,11 +14,11 @@ jobs:
     steps:
       # 1. โหลดไฟล์โค้ดทั้งหมดของเรามาไว้ในคอมจำลอง
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       # 2. install Python
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
@@ -33,4 +33,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
         run: |
-          python day4_load_cloud.py
+          python Load to cloud.py
