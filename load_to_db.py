@@ -7,10 +7,10 @@ import os
 def load_data_to_db() :
     conn = None
     cursor = None
-
+    df = pd.DataFrame()
     try :
         print ("Loading data to database...")
-
+        
         bucket_name = os.getenv('BUCKET_NAME') # get data from s3
         file_path = f"s3://{bucket_name}/cleaned_data.parquet"
 
