@@ -1,46 +1,34 @@
 import json
 import pandas as pd  # นำเข้า Pandas และตั้งชื่อเล่นสั้นๆ ว่า pd
 
-# ---------------------------------------------------------
-# 1. นำข้อมูลออกจากตู้เย็น (Load Raw Data)
-# ---------------------------------------------------------
-# เปลี่ยนชื่อไฟล์ตรงนี้ให้ตรงกับไฟล์ที่คุณเซฟได้จากเมื่อวานนะครับ!
+
+# Load Raw Data
+
 filename = "raw_brewery_data_260327.json" 
 
 with open(filename, "r", encoding="utf-8") as file:
-    raw_data = json.load(file) # อ่านข้อมูล JSON กลับเข้ามาใน Python
+    raw_data = json.load(file) #  data json to python dict
 
-print(f"ดึงข้อมูลดิบมาได้ทั้งหมด {len(raw_data)} รายการ")
+print(f"Load Raw Data {len(raw_data)} Rows")
 
-# ---------------------------------------------------------
-# 2. วางข้อมูลลงบนเขียง (สร้าง DataFrame)
-# ---------------------------------------------------------
-# คำสั่งนี้จะเสกข้อมูล JSON ยุ่งๆ ให้กลายเป็น "ตาราง" แบบ Excel ทันที
+#Create Dataframe
 df = pd.DataFrame(raw_data) 
 
-# ---------------------------------------------------------
-# 3. หั่นส่วนที่ไม่ใช้ออก (Select Columns)
-# ---------------------------------------------------------
-# เลือกมาเฉพาะคอลัมน์ที่เราสนใจจะนำไปวิเคราะห์ต่อ
+# Choose colum to create
 columns_to_keep = ['id', 'name', 'brewery_type', 'city', 'state', 'country']
 df_cleaned = df[columns_to_keep]
 
-# ---------------------------------------------------------
-# 4. อุดรอยรั่วของข้อมูล (Handle Missing Values)
-# ---------------------------------------------------------
-# บางโรงเบียร์อาจจะไม่มีข้อมูลเมือง (city) เราจะเติมคำว่า "Unknown" ลงไปแทนช่องว่าง
-# เพื่อไม่ให้ตารางแหว่ง ซึ่งจะมีปัญหาตอนเอาไปทำ Dashboard
+
+#  Solve Missing Values
+
 df_cleaned.loc[:, 'city'] = df_cleaned['city'].fillna('Unknown')
 
-# ---------------------------------------------------------
-# 5. จัดใส่กล่องพร้อมเสิร์ฟ (Save to CSV)
-# ---------------------------------------------------------
-# แสดงตัวอย่างตาราง 5 บรรทัดแรกให้เราดูชื่นใจ
-print("\nหน้าตาข้อมูลที่ทำความสะอาดแล้ว:")
+# Cleaned Data
+print("\nCleaned Data:")
 print(df_cleaned.head())
 
-# บันทึกเป็นไฟล์ CSV (ไฟล์ตารางที่เปิดด้วย Excel ได้)
+# Save To Csv
 output_filename = "cleaned_breweries.csv"
 df_cleaned.to_csv(output_filename, index=False, encoding="utf-8")
 
-print(f"\n✅ บันทึกข้อมูลที่ทำความสะอาดแล้วลงไฟล์ '{output_filename}' สำเร็จ!")
+print(f"\nSave Cleaned Data to File '{output_filename}' Successful!")
