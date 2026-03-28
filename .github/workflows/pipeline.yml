@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas boto3 requests fsspec s3fs pyarrow
+          pip install pandas boto3 requests fsspec s3fs pyarrow psycopg2-binary
 
       - name: Run Pipeline Scripts
         env:
@@ -33,3 +33,11 @@ jobs:
           python getAPI.py
           python jsontocsv.py
           python load_to_cloud.py
+      - name: Run Database Loader (S3 to Supabase)
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }} 
+        run: |
+          python load_to_db.py
