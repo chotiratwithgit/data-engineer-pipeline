@@ -29,11 +29,11 @@ def load_data_to_db() :
 
 # upsert query
         insert_query = """
-        INSERT INTO breweries (id, name, berewery_type, street, city, state, postal_code, country, longitude , latitude)
+        INSERT INTO breweries (id, name, brewery_type, street, city, state, postal_code, country, longitude, latitude)
         VALUES %s
         ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
-            berewery_type = EXCLUDED.berewery_type,
+            brewery_type = EXCLUDED.brewery_type,
             street = EXCLUDED.street,
             city = EXCLUDED.city,
             state = EXCLUDED.state,
