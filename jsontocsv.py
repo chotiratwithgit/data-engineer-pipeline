@@ -1,15 +1,24 @@
 import json
-import pandas as pd  # นำเข้า Pandas และตั้งชื่อเล่นสั้นๆ ว่า pd
+import glob
+import os
+import pandas as pd 
 
 
 # Load Raw Data
+json_files = glob.glob("raw_brewery_data_*.json")  # Search for JSON files in the current directory that match the pattern "raw_brewery_data_*.json"
 
-filename = "raw_brewery_data_260327.json" 
+if json_files:
 
-with open(filename, "r", encoding="utf-8") as file:
-    raw_data = json.load(file) #  data json to python dict
+    filename = json_files[0]  # Select the first file found
+    
+    with open(filename, "r", encoding="utf-8") as file:
 
-print(f"Load Raw Data {len(raw_data)} Rows")
+        raw_data = json.load(file)  # Load data from the JSON file
+
+        print(f"Load Raw Data from File '{filename}' Successful!")
+else :
+    print("No JSON files found in the 'data' folder.")
+    exit()
 
 #Create Dataframe
 df = pd.DataFrame(raw_data) 
