@@ -1,15 +1,15 @@
 name: Daily Brewery Data Pipeline
 
-# ตั้งเวลาให้ทำงาน
+# create a workflow that runs every day at 8 AM Thailand time (UTC+7)
 on:
   schedule:
-    # รันอัตโนมัติทุกๆ 8 โมงเช้าของเวลาไทย (01:00 UTC)
+   
     - cron: '0 1 * * *' 
-  workflow_dispatch: # ปุ่มกดสั่งรันauto
+  workflow_dispatch: # manually trigger
 
 jobs:
   run-data-pipeline:
-    runs-on: ubuntu-latest # เป้นการยืมคอมพิวเตอร์จำลองของ GitHub
+    runs-on: ubuntu-latest # use the latest version of Ubuntu runner
 
     steps:
       - name: Checkout code
@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas boto3 requests fsspec s3fs pyarrow 
+          pip install pandas boto3 requests fsspec s3fs pyarrow python-dotenv psycopg2-binary
 
       - name: Run Pipeline Scripts
         env:
@@ -33,4 +33,6 @@ jobs:
           python getAPI.py
           python jsontocsv.py
           python load_to_cloud.py
+          python load_to_db.py
+      
       
