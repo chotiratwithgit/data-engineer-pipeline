@@ -12,9 +12,9 @@ def load_data_to_db() :
         print ("Loading data to database...")
 
         bucket_name = os.getenv('BUCKET_NAME') # get data from s3
-        file_path = f"s3://{bucket_name}/brewery_data.csv"
+        file_path = f"s3://{bucket_name}/cleaned_data.parquet"
 
-        df = pd.read_csv(file_path)  # read data from csv file
+        df = pd.read_parquet(file_path)  # read data from parquet file
         print (f"Data loaded from {len(df)} rows")
 
         df = df.where (pd.notnull(df), None)  # replace NaN with None 

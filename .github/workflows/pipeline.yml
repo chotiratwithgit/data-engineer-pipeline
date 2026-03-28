@@ -22,7 +22,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install pandas boto3 requests fsspec s3fs pyarrow python-dotenv psycopg2-binary
+          pip install pandas boto3 requests fsspec s3fs pyarrow python-dotenv psycopg2-binary fastparquet
 
       - name: Run Pipeline Scripts
         env:
