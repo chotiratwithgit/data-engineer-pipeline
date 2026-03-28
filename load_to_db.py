@@ -22,6 +22,8 @@ def load_data_to_db() :
         data_tuples = [tuple(x) for x in df.to_numpy()]   # convert dataframe to list of tuples
 
         db_url = os.getenv('DATABASE_URL')  # get database url 
+        if "?" not in db_url:
+            db_url += "?sslmode=require"
         conn  = psycopg2.connect(db_url)  # connect to database
         cursor = conn.cursor()  # create cursor
 
