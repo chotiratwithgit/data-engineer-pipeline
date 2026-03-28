@@ -1,42 +1,45 @@
 import requests
 import json
 import datetime
-# ดึงข้อมูลเบียร์จาก API
+# Get API Data
 def extract_brewery_data(per_page= 10) :
     url =f"https://api.openbrewerydb.org/v1/breweries?per_page={per_page}"
-# ใช้try เพื่อจัดการกับข้อผิดพลาดที่อาจเกิดขึ้น
+
+#  Go to exception if there is error in the request
     try : 
-        print( f"กำลังดึงข้อมูลเบียร์จาก API: {per_page}รายการต่อหน้า" )
+        print( f"Getting API: {per_page} items per page" )
         response = requests.get(url)
         
-        response.raise_for_status()  # ตรวจสอบว่าการตอบกลับเป็นสำเร็จหรือไม่
+        response.raise_for_status()  # Check if the request was successful (status code 200)
         
-        data = response.json()  # แปลงข้อมูลจาก JSON เป็น Python dict
-        print("ดึงข้อมูลสำเร็จ")
+        data = response.json()  #  JSON to Python dict
+        print("successfully got data from API")
         return data
     
     except Exception as e:
-        print(f"เกิดข้อผิดพลาดในการดึงข้อมูล: {e}")
+        print(f"Error Getting data: {e}")
         return None
     
-# สร้างฟังชัน เพื่อ save ข้อมูลลงไฟล์ JSON
+# Create function to save data to file
 def save_raw_data(data_to_save, filename):
-    if data_to_save != None:# เช็คก่อนว่ามีข้อมูลให้เซฟไหม 
-        # เปิดไฟล์ขึ้นมาในโหมด "w" (Write = เขียนทับ)
+    if data_to_save != None:# Check if there is data to save
+
+        # Open a file in write mode 
         with open(filename, "w",encoding="utf-8") as file:
-            # เอาข้อมูล Python ยัดกลับเป็นโครงสร้าง JSON แล้วเซฟลงไฟล์
+            
+            # Convert Python data to JSON and save to file
             json.dump(data_to_save, file, indent=4, ensure_ascii=False)
-        print(f"ข้อมูลถูกบันทึกลงไฟล์ {filename} เรียบร้อยแล้ว")
+        print(f"Data saved to file {filename} successfully!")
     else :
-        print("ไม่มีข้อมูลให้บันทึก")
-#ส่วนที่ 3: สั่งให้โปรแกรมเริ่มทำงานจริง (ผู้จัดการสั่งงาน)
+        print("No data to save")
 
+# Main function to execute the code
 if __name__ == "__main__":
-    raw_data = extract_brewery_data(per_page=5)  # ดึงข้อมูลเบียร์จาก API
+    raw_data = extract_brewery_data(per_page=5)  # 
 
-   # สร้างชื่อไฟล์โดยเอา "วันที่และเวลาปัจจุบัน"
+   # Generate file name with today's date
     today_date = datetime.datetime.now().strftime("%y%m%d") 
-    file_name = f"raw_brewery_data_{today_date}.json"  # ชื่อไฟล์ที่ต้องการบันทึก
-
+    file_name = f"raw_brewery_data_{today_date}.json"  
+    
     # save file
     save_raw_data(raw_data,filename=file_name)
