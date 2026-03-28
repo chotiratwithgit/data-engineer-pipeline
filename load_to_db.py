@@ -29,18 +29,14 @@ def load_data_to_db() :
 
 # upsert query
         insert_query = """
-        INSERT INTO breweries (id, name, brewery_type, street, city, state, postal_code, country, longitude, latitude)
+        INSERT INTO breweries (id, name, brewery_type, city, state, country)
         VALUES %s
         ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
             brewery_type = EXCLUDED.brewery_type,
-            street = EXCLUDED.street,
             city = EXCLUDED.city,
             state = EXCLUDED.state,
-            postal_code = EXCLUDED.postal_code,
-            country = EXCLUDED.country,
-            longitude = EXCLUDED.longitude,
-            latitude = EXCLUDED.latitude;
+            country = EXCLUDED.country;
         """
            
         psycopg2.extras.execute_values(cursor, insert_query, data_tuples)  # execute query
