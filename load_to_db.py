@@ -40,7 +40,7 @@ def load_data_to_db() :
             postal_code = EXCLUDED.postal_code,
             country = EXCLUDED.country,
             longitude = EXCLUDED.longitude,
-            latitude = EXCLUDED.latitude,
+            latitude = EXCLUDED.latitude;
         """
            
         psycopg2.extras.execute_values(cursor, insert_query, data_tuples)  # execute query
