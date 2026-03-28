@@ -5,27 +5,31 @@ import os
 
 
 def load_data_to_db() :
-    print ("Loading data to database...")
+    conn = None
+    cursor = None
 
-    bucket_name = os.getenv('BUCKET_NAME') # get data from s3
-    file_path = f"s3://{bucket_name}/brewery_data.csv"
+    try :
+        print ("Loading data to database...")
 
-    df = pd.read_csv(file_path)  # read data from csv file
-    print (f"Data loaded from {len(df)} rows")
+        bucket_name = os.getenv('BUCKET_NAME') # get data from s3
+        file_path = f"s3://{bucket_name}/brewery_data.csv"
 
-    df = df.where (pd.notnull(df), None)  # replace NaN with None 
+        df = pd.read_csv(file_path)  # read data from csv file
+        print (f"Data loaded from {len(df)} rows")
 
-    data_tuples = [tuple(x) for x in df.to_numpy()]   # convert dataframe to list of tuples
+        df = df.where (pd.notnull(df), None)  # replace NaN with None 
 
-    db_url = os.getenv('DATABASE_URL')  # get database url 
-    conn  = psycopg2.connect(db_url)  # connect to database
-    cursor = conn.cursor()  # create cursor
+        data_tuples = [tuple(x) for x in df.to_numpy()]   # convert dataframe to list of tuples
+
+        db_url = os.getenv('DATABASE_URL')  # get database url 
+        conn  = psycopg2.connect(db_url)  # connect to database
+        cursor = conn.cursor()  # create cursor
 
 # upsert query
-    insert_query = """
-    INSERT INTO breweries (id, name, berewery_type, street, city, state, postal_code, country, longitude , latitude)
-    VALUES %s
-    ON CONFLICT (id) DO UPDATE SET
+        insert_query = """
+        INSERT INTO breweries (id, name, berewery_type, street, city, state, postal_code, country, longitude , latitude)
+        VALUES %s
+        ON CONFLICT (id) DO UPDATE SET
             name = EXCLUDED.name,
             berewery_type = EXCLUDED.berewery_type,
             street = EXCLUDED.street,
@@ -35,23 +39,27 @@ def load_data_to_db() :
             country = EXCLUDED.country,
             longitude = EXCLUDED.longitude,
             latitude = EXCLUDED.latitude,
-
-"""
+        """
            
+        psycopg2.extras.execute_values(cursor, insert_query, data_tuples)  # execute query
+        conn.commit() 
+        print ("Data loaded successfully")
 
-try :
-    psycopg2.extras.execute_values(cursor, insert_query, data_tuples)  # execute query
-    conn.commit() 
-    print ("Data loaded successfully")
-except Exception as e:
-    print (f"Error loading data: {e}")
-    conn.rollback()
-finally:
-    cursor.close()  # close cursor
-    conn.close()  # close connection
+
+    except Exception as e:
+        print (f"Error loading data: {e}")
+        if conn:
+            conn.rollback()
+            print(" Rollback completed.")
+
+    finally:
+        if cursor:
+            cursor.close()  # close cursor
+        if conn:
+            conn.close()  # close connection
 
 if __name__ == "__main__" :
-    load_data_to_db()
+        load_data_to_db()
 
 
 
