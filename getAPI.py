@@ -35,7 +35,7 @@ def save_raw_data(data_to_save, filename):
 
 # Main function to execute the code
 if __name__ == "__main__":
-    raw_data = extract_brewery_data(per_page=5)  # 
+    raw_data = extract_brewery_data(per_page=200)  # 
 
    # Generate file name with today's date
     today_date = datetime.datetime.now().strftime("%y%m%d") 
